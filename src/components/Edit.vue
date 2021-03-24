@@ -1,9 +1,9 @@
 <template>
   <div class="form">
-    <textarea v-bind:value="value" v-on:input="$emit('input', $event.target.value)" v-focus></textarea>
+    <textarea :value="value" @input="$emit('input', $event.target.value)" v-focus></textarea>
     <div class="btn">
-      <button class="btn-edit" v-on:click="$emit('save')">編集</button>
-      <button class="btn-delete" v-on:click="$emit('delete')">削除</button>
+      <button class="btn-edit" @click="$emit('save')">編集</button>
+      <button class="btn-delete" @click="$emit('delete')">削除</button>
     </div>
   </div>
 </template>

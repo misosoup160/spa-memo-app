@@ -2,31 +2,26 @@
   <div id="app">
     <div class="memo">
       <ul class="memo-list">
-        <li v-for="memo in memos" :key="memo.id" v-on:click="showMemo(memo.id)">{{ memo.body | title }}</li>
+        <li v-for="memo in memos" :key="memo.id" @click="showMemo(memo.id)">{{ memo.body | title }}</li>
       </ul>
-      <span v-on:click="create = true, edit = false" class="memo-add">+</span>
+      <span @click="createMemo" class="memo-add">+</span>
     </div>
     <div class="form">
-      <create-input v-if="create" v-model="newMemo" v-on:add="addMemo"></create-input>
-      <edit-input v-if="edit" v-model="selectMemo.body" v-on:delete="deleteMemo" v-on:save="editMemo"></edit-input>
+      <edit-input v-if="edit" v-model="selectMemo.body" @delete="deleteMemo" @save="editMemo"></edit-input>
     </div>
   </div>
 </template>
 
 <script>
-import createInput from './components/Create.vue'
 import editInput from './components/Edit.vue'
 
 export default {
   name: 'App',
   components: {
-    createInput,
     editInput
   },
   data: function () {
     return {
-      newMemo: '',
-      create: false,
       edit: false,
       selectId: '',
       memos: []
@@ -46,18 +41,15 @@ export default {
       const parsed = JSON.stringify(this.memos)
       localStorage.setItem('memos', parsed)
     },
-    addMemo: function () {
-      if (!this.newMemo.match(/\S/g)) {
-        return
+    createMemo: function () {
+      const id = Math.random().toString(32).substring(2)
+      const newMemo = {
+        id: id,
+        body: '新規メモ'
       }
-      const memo = {
-        id: Math.random().toString(32).substring(2),
-        body: this.newMemo
-      }
-      this.memos.push(memo)
-      this.newMemo = ''
-      this.saveMemo()
-      this.create = false
+      this.memos.push(newMemo)
+      this.selectId = id
+      this.edit = true
     },
     showMemo: function (id) {
       this.selectId = id
