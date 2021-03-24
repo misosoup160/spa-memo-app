@@ -2,7 +2,7 @@
   <div class="form">
     <textarea :value="value" @input="$emit('input', $event.target.value)" v-focus></textarea>
     <div class="btn">
-      <button class="btn-edit" @click="$emit('save')">編集</button>
+      <button class="btn-edit" @click="$emit('edit')">編集</button>
       <button class="btn-delete" @click="$emit('delete')">削除</button>
     </div>
   </div>

@@ -7,7 +7,7 @@
       <span @click="createMemo" class="memo-add">+</span>
     </div>
     <div class="form">
-      <edit-input v-if="edit" v-model="selectMemo.body" @delete="deleteMemo" @save="editMemo"></edit-input>
+      <edit-input v-if="edit" v-model="selectMemo.body" @delete="deleteMemo" @edit="editMemo"></edit-input>
     </div>
   </div>
 </template>
@@ -54,7 +54,6 @@ export default {
     showMemo: function (id) {
       this.selectId = id
       this.edit = true
-      this.create = false
     },
     editMemo: function () {
       if (this.selectMemo.body.match(/\S/g)) {
