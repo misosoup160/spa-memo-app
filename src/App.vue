@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <div class="memo">
+    <div class="memo" :class="{inactive: edit}">
       <ul class="memo-list">
         <li v-for="memo in memos" :key="memo.id" @click="showMemo(memo.id)">{{ memo.body | title }}</li>
       </ul>
       <span @click="createMemo" class="memo-add">+</span>
     </div>
     <div class="form">
-      <edit-input v-if="edit" v-model="selectMemo.body" @delete="deleteMemo" @edit="editMemo"></edit-input>
+      <edit-input v-if="edit" v-model="newMemo" @delete="deleteMemo" @edit="editMemo"></edit-input>
     </div>
   </div>
 </template>
@@ -24,6 +24,7 @@ export default {
     return {
       edit: false,
       selectId: '',
+      newMemo: '',
       memos: []
     }
   },
@@ -42,6 +43,9 @@ export default {
       localStorage.setItem('memos', parsed)
     },
     createMemo: function () {
+      if (this.edit) {
+        return
+      }
       const id = Math.random().toString(32).substring(2)
       const newMemo = {
         id: id,
@@ -49,14 +53,20 @@ export default {
       }
       this.memos.push(newMemo)
       this.selectId = id
+      this.newMemo = this.selectMemo.body
       this.edit = true
     },
     showMemo: function (id) {
+      if (this.edit) {
+        return
+      }
       this.selectId = id
+      this.newMemo = this.selectMemo.body
       this.edit = true
     },
     editMemo: function () {
       if (this.selectMemo.body.match(/\S/g)) {
+        this.selectMemo.body = this.newMemo
         this.saveMemo()
         this.edit = false
       } else {
@@ -100,6 +110,11 @@ export default {
 
 .memo {
   width: 200px;
+}
+
+.inactive {
+  color: #bbb;
+  pointer-events: none;
 }
 
 .memo-list {
