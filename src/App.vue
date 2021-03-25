@@ -1,13 +1,13 @@
 <template>
   <div id="app">
-    <div class="memo" :class="{inactive: edit}">
+    <div class="memo" :class="{ inactive: formEnabled }">
       <ul class="memo-list">
         <li v-for="memo in memos" :key="memo.id" @click="showMemo(memo.id)">{{ memo.body | title }}</li>
       </ul>
       <span @click="createMemo" class="memo-add">+</span>
     </div>
     <div class="form">
-      <edit-input v-if="edit" v-model="newMemo" @delete="deleteMemo" @edit="editMemo"></edit-input>
+      <edit-input v-if="formEnabled" v-model="newMemo" @delete="deleteMemo" @edit="editMemo"></edit-input>
     </div>
   </div>
 </template>
@@ -22,8 +22,8 @@ export default {
   },
   data: function () {
     return {
-      edit: false,
-      selectId: '',
+      formEnabled: false,
+      selectedId: '',
       newMemo: '',
       memos: []
     }
@@ -43,45 +43,45 @@ export default {
       localStorage.setItem('memos', parsed)
     },
     createMemo: function () {
-      if (this.edit) {
+      if (this.formEnabled) {
         return
       }
       const id = Math.random().toString(32).substring(2)
       const newMemo = {
-        id: id,
+        id,
         body: '新規メモ'
       }
       this.memos.push(newMemo)
-      this.selectId = id
-      this.newMemo = this.selectMemo.body
-      this.edit = true
+      this.selectedId = id
+      this.newMemo = this.selectedMemo.body
+      this.formEnabled = true
     },
     showMemo: function (id) {
-      if (this.edit) {
+      if (this.formEnabled) {
         return
       }
-      this.selectId = id
-      this.newMemo = this.selectMemo.body
-      this.edit = true
+      this.selectedId = id
+      this.newMemo = this.selectedMemo.body
+      this.formEnabled = true
     },
     editMemo: function () {
-      if (this.selectMemo.body.match(/\S/g)) {
-        this.selectMemo.body = this.newMemo
+      if (this.selectedMemo.body.match(/\S/g)) {
+        this.selectedMemo.body = this.newMemo
         this.saveMemo()
-        this.edit = false
+        this.formEnabled = false
       } else {
         this.deleteMemo()
       }
     },
     deleteMemo: function () {
-      this.memos = this.memos.filter(memo => memo.id !== this.selectId)
+      this.memos = this.memos.filter(memo => memo.id !== this.selectedId)
       this.saveMemo()
-      this.edit = false
+      this.formEnabled = false
     }
   },
   computed: {
-    selectMemo: function () {
-      return this.memos.find(memo => memo.id === this.selectId)
+    selectedMemo: function () {
+      return this.memos.find(memo => memo.id === this.selectedId)
     }
   },
   filters: {
